@@ -4,6 +4,8 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 const { parse, format, isValid } = require("date-fns");
 
+require('dotenv').config();
+
 const dataPath = path.join(__dirname, "todoApplication.db");
 
 const app = express();
@@ -12,14 +14,16 @@ app.use(express.json());
 
 let db = null;
 
+let PORT = process.env.PORT || 3000;
+
 const initilalizingServerAndDb = async () => {
   try {
     db = await open({
       filename: dataPath,
       driver: sqlite3.Database,
     });
-    app.listen(3000, () =>
-      console.log("Server Running at http://localhost:3000/")
+    app.listen(PORT, () =>
+      console.log(`Server Running at http://localhost:${PORT}/`)
     );
   } catch (error) {
     console.log(`Error Db: ${error.message}`);
