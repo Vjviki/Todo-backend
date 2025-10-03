@@ -6,5 +6,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
-  }
+  },
+  "scripts": {
+  "start": "node index.js",
+  "postinstall": "npm rebuild sqlite3"
 }
