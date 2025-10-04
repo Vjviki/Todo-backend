@@ -10,13 +10,15 @@ const PORT = process.env.PORT || 3000;
 
 // PostgreSQL connection pool
 const pool = new Pool({
-  user: process.env.PG_USER,        // e.g., "postgres"
+  user: process.env.PG_USER, // e.g., "postgres"
   host: process.env.PG_HOST || "localhost",
   database: process.env.PG_DATABASE, // e.g., "tododb"
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT || 5432,
+  ssl: {
+    rejectUnauthorized: false, // for Render Postgres
+  },
 });
-
 
 // Valid values for status, priority, category
 const validValues = {
@@ -28,9 +30,12 @@ const validValues = {
 const validValuesChecking = (req, res, next) => {
   const { status, priority, category, dueDate } = { ...req.query, ...req.body };
 
-  if (status && !validValues.status.includes(status)) return res.status(400).send("Invalid Todo Status");
-  if (priority && !validValues.priority.includes(priority)) return res.status(400).send("Invalid Todo Priority");
-  if (category && !validValues.category.includes(category)) return res.status(400).send("Invalid Todo Category");
+  if (status && !validValues.status.includes(status))
+    return res.status(400).send("Invalid Todo Status");
+  if (priority && !validValues.priority.includes(priority))
+    return res.status(400).send("Invalid Todo Priority");
+  if (category && !validValues.category.includes(category))
+    return res.status(400).send("Invalid Todo Category");
   if (dueDate) {
     const parsedDate = parse(dueDate, "yyyy-MM-dd", new Date());
     if (!isValid(parsedDate)) return res.status(400).send("Invalid Due Date");
@@ -93,7 +98,9 @@ app.get("/todos/", validValuesChecking, async (req, res) => {
 app.get("/todos/:todoId/", async (req, res) => {
   const { todoId } = req.params;
   try {
-    const result = await pool.query("SELECT * FROM todo WHERE id = $1", [todoId]);
+    const result = await pool.query("SELECT * FROM todo WHERE id = $1", [
+      todoId,
+    ]);
     res.send(resposiveFormate(result.rows[0]));
   } catch (err) {
     res.status(500).send(err.message);
@@ -110,7 +117,9 @@ app.get("/agenda/", async (req, res) => {
 
   const formateDate = format(parseDate, "yyyy-MM-dd");
   try {
-    const result = await pool.query("SELECT * FROM todo WHERE due_date = $1", [formateDate]);
+    const result = await pool.query("SELECT * FROM todo WHERE due_date = $1", [
+      formateDate,
+    ]);
     res.send(result.rows.map(resposiveFormate));
   } catch (err) {
     res.status(500).send(err.message);
@@ -146,26 +155,41 @@ app.put("/todos/:todoId/", validValuesChecking, async (req, res) => {
 
   try {
     if (status) {
-      await pool.query("UPDATE todo SET status = $1 WHERE id = $2", [status, todoId]);
+      await pool.query("UPDATE todo SET status = $1 WHERE id = $2", [
+        status,
+        todoId,
+      ]);
       return res.send("Status Updated");
     }
     if (priority) {
-      await pool.query("UPDATE todo SET priority = $1 WHERE id = $2", [priority, todoId]);
+      await pool.query("UPDATE todo SET priority = $1 WHERE id = $2", [
+        priority,
+        todoId,
+      ]);
       return res.send("Priority Updated");
     }
     if (category) {
-      await pool.query("UPDATE todo SET category = $1 WHERE id = $2", [category, todoId]);
+      await pool.query("UPDATE todo SET category = $1 WHERE id = $2", [
+        category,
+        todoId,
+      ]);
       return res.send("Category Updated");
     }
     if (todo) {
-      await pool.query("UPDATE todo SET todo = $1 WHERE id = $2", [todo, todoId]);
+      await pool.query("UPDATE todo SET todo = $1 WHERE id = $2", [
+        todo,
+        todoId,
+      ]);
       return res.send("Todo Updated");
     }
     if (dueDate) {
       const parseDate = parse(dueDate, "yyyy-MM-dd", new Date());
       if (!isValid(parseDate)) return res.status(400).send("Invalid Due Date");
       const formateDate = format(parseDate, "yyyy-MM-dd");
-      await pool.query("UPDATE todo SET due_date = $1 WHERE id = $2", [formateDate, todoId]);
+      await pool.query("UPDATE todo SET due_date = $1 WHERE id = $2", [
+        formateDate,
+        todoId,
+      ]);
       return res.send("Due Date Updated");
     }
     res.status(400).send("No valid fields to update");
@@ -186,14 +210,4 @@ app.delete("/todos/:todoId/", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
-
-app.get(`/todos`, async (req, res) => {
-  try{
-    const result = await pool.query("SELECT * FROM todo");
-    res.send(result.rows.map(resposiveFormate));
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-})
-
 module.exports = app;
