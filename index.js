@@ -6,7 +6,7 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PG_PORT || 3000;
 
 // PostgreSQL connection pool
 const pool = new Pool({
