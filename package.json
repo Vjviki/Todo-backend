@@ -11,4 +11,5 @@
   "start": "node index.js",
   "postinstall": "npm rebuild sqlite3"
 }
+}
 
