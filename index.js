@@ -187,4 +187,13 @@ app.delete("/todos/:todoId/", async (req, res) => {
   }
 });
 
+app.get(`/`, async (req, res) => {
+  try{
+    const result = await pool.query("SELECT * FROM todo");
+    res.send(result.rows.map(resposiveFormate));
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+})
+
 module.exports = app;
