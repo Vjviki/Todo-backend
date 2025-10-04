@@ -1,0 +1,10 @@
+CREATE TABLE todo ( id SERIAL PRIMARY KEY, todo TEXT NOT NULL, category TEXT, priority TEXT, status TEXT, due_date DATE);
+INSERT INTO todo VALUES(1,'Learn Node JS','LEARNING','HIGH','IN PROGRESS','2025-01-12');
+INSERT INTO todo VALUES(2,'Buy a Car','HOME','MEDIUM','TO DO','2025-01-12');
+INSERT INTO todo VALUES(3,'Clean the garden','LEARNING','HIGH','DONE','2025-01-12');
+INSERT INTO todo VALUES(4,'Fix the bug','WORK','MEDIUM','DONE','2025-01-12');
+INSERT INTO todo VALUES(5,'Submit the report','WORK','LOW','TO DO','2025-01-12');
+INSERT INTO todo VALUES(6,'Event theme','HOME','LOW','TO DO','2025-01-12');
+INSERT INTO todo VALUES(7,'Managing Files','HOME','HIGH','TO DO','2025-01-12');
+INSERT INTO todo VALUES(8,'Clean the garden','HOME','HIGH','DONE','2025-01-12');
+INSERT INTO todo VALUES(9,'Buy a car','HOME','HIGH','TO DO','2021-02-22');
