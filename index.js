@@ -17,6 +17,7 @@ const pool = new Pool({
   port: process.env.PG_PORT || 5432,
 });
 
+
 // Valid values for status, priority, category
 const validValues = {
   status: ["TO DO", "IN PROGRESS", "DONE"],
