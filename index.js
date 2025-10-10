@@ -1,12 +1,15 @@
 const express = require("express");
 const { Pool } = require("pg");
+const cors = require("cors");
 const { parse, format, isValid } = require("date-fns");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-const PORT = process.env.PORT || 10000;
+
+const PORT = process.env.PORT || 3000;
 
 // PostgreSQL connection pool
 const pool = new Pool({
